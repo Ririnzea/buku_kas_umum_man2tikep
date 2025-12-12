@@ -1,0 +1,1 @@
+# buku_kas_umum_man2tikep
