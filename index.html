@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Kas Umum</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <script src="auth.js"></script>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>BUKU KAS UMUM</h1>
+                <div class="period-selector">
+                    <label>Bulan:</label>
+                    <select id="monthSelect">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8" selected>Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                    <label>Tahun:</label>
+                    <input type="number" id="yearInput" value="2025" min="2000" max="2100">
+                </div>
+                <div id="headerDisplay" class="header-info">
+                    <div class="info-row">
+                        <span class="label">NAMA MADRASAH</span>
+                        <span class="separator">:</span>
+                        <span id="namaMadrasah" class="value">MAN 2 TIDORE KEPULAUAN</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">KELURAHAN</span>
+                        <span class="separator">:</span>
+                        <span id="kelurahan" class="value">MAREKU</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">KOTA</span>
+                        <span class="separator">:</span>
+                        <span id="kota" class="value">TIDORE KEPULAUAN</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">PROVINSI</span>
+                        <span class="separator">:</span>
+                        <span id="provinsi" class="value">MALUKU UTARA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons no-print">
+            <button id="addTransactionBtn" class="btn btn-primary">+ Tambah Transaksi</button>
+            <button id="settingsBtn" class="btn btn-secondary">⚙️ Pengaturan</button>
+            <button id="changePasswordBtn" class="btn btn-warning"
+                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">🔑 Ubah
+                Password</button>
+            <button id="printBtn" class="btn btn-success">🖨️ Cetak</button>
+            <button onclick="auth.logout()" class="btn btn-danger" style="margin-left: auto;">🚪 Logout</button>
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="table-wrapper">
+            <table id="transactionTable">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>TGL</th>
+                        <th>NO BUKTI</th>
+                        <th>URAIAN</th>
+                        <th>KODE REKENING</th>
+                        <th>PENERIMAAN</th>
+                        <th>PENGELUARAN</th>
+                        <th>SALDO</th>
+                        <th class="no-print">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionBody">
+                    <!-- Transactions will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section-table">
+            <table class="table-summary">
+                <tbody>
+                    <tr>
+                        <td colspan="7" class="summary-label">Jumlah sampai Periode Lalu</td>
+                        <td colspan="2" class="summary-value" id="previousPeriod">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="summary-label">Jumlah Periode ini</td>
+                        <td colspan="2" class="summary-value" id="currentPeriod">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="summary-label">Kas Bulan <span id="summaryMonth">Agustus</span></td>
+                        <td colspan="2" class="summary-value" id="monthCash">0</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="7" class="summary-label-total">Kas Di Bendahara</td>
+                        <td colspan="2" class="summary-value-total" id="totalCash">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="9" class="terbilang-row">
+                            <span id="terbilangText" style="font-style: italic;">(Nol Rupiah)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="summary-label-small">a. Tunai</td>
+                        <td colspan="2" class="summary-value-small" id="cashTunai">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="summary-label-small">b. Bank</td>
+                        <td colspan="2" class="summary-value-small" id="cashBank">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Signature Section -->
+        <div class="signature-section">
+            <div class="signature-left">
+                <p>Mengetahui</p>
+                <p class="signature-title">Kepala Madrasah</p>
+                <div class="signature-space"></div>
+                <p class="signature-name" id="kepalaName">Nurlaila Usman, SPd</p>
+                <p class="signature-nip" id="kepalaNIP">NIP. 198508021376032001</p>
+            </div>
+            <div class="signature-right">
+                <p><span id="signatureLocation">Tidore</span>, <span id="signatureDate">30 Agustus 2025</span></p>
+                <p class="signature-title">Bendahara BOSDA</p>
+                <div class="signature-space"></div>
+                <p class="signature-name" id="bendaharaName">Sarbanan Saruk SPd</p>
+                <p class="signature-nip" id="bendaharaNIP">NIP. 196908061089112003</p>
+            </div>
+        </div>
+
+        <!-- Transaction Modal -->
+        <div id="transactionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Tambah Transaksi</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="transactionForm">
+                    <input type="hidden" id="transactionId">
+
+                    <div class="form-group">
+                        <label for="transactionDate">Tanggal:</label>
+                        <input type="date" id="transactionDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="noBukti">No Bukti:</label>
+                        <input type="text" id="noBukti">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="uraian">Uraian:</label>
+                        <textarea id="uraian" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kodeRekening">Kode Rekening:</label>
+                        <input type="text" id="kodeRekening">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="penerimaan">Penerimaan (Rp):</label>
+                        <input type="number" id="penerimaan" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pengeluaran">Pengeluaran (Rp):</label>
+                        <input type="number" id="pengeluaran" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div id="changePasswordModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Ubah Password</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label for="oldPassword">Password Lama:</label>
+                        <input type="password" id="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Password Baru:</label>
+                        <input type="password" id="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Konfirmasi Password Baru:</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Simpan Password</button>
+                        <button type="button" class="btn btn-secondary" id="cancelChangePasswordBtn">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Pengaturan</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="settingsForm">
+                    <h3>Informasi Madrasah</h3>
+
+                    <div class="form-group">
+                        <label for="settingLogo">Logo Madrasah:</label>
+                        <input type="file" id="settingLogo" accept="image/*">
+                        <small style="color: #718096; font-style: italic;">Format: PNG, JPG, JPEG (Max 2MB
+                            disarankan)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingNamaMadrasah">Nama Madrasah:</label>
+                        <input type="text" id="settingNamaMadrasah" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingKelurahan">Kelurahan:</label>
+                        <input type="text" id="settingKelurahan" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingKota">Kota:</label>
+                        <input type="text" id="settingKota" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingProvinsi">Provinsi:</label>
+                        <input type="text" id="settingProvinsi" required>
+                    </div>
+
+                    <h3>Tanda Tangan</h3>
+
+                    <div class="form-group">
+                        <label for="settingKepalaName">Nama Kepala Madrasah:</label>
+                        <input type="text" id="settingKepalaName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingKepalaNIP">NIP Kepala Madrasah:</label>
+                        <input type="text" id="settingKepalaNIP" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingBendaharaName">Nama Bendahara:</label>
+                        <input type="text" id="settingBendaharaName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingBendaharaNIP">NIP Bendahara:</label>
+                        <input type="text" id="settingBendaharaNIP" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingLocation">Lokasi Tanda Tangan:</label>
+                        <input type="text" id="settingLocation" required placeholder="Contoh: Tidore">
+                    </div>
+
+                    <h3>Saldo Awal & Kas</h3>
+
+                    <div class="form-group">
+                        <label for="settingPreviousPeriod">Saldo Periode Lalu:</label>
+                        <input type="number" id="settingPreviousPeriod" min="0" step="0.01" placeholder="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingCashTunai">Kas Tunai:</label>
+                        <input type="number" id="settingCashTunai" min="0" step="0.01" placeholder="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settingCashBank">Kas Bank:</label>
+                        <input type="number" id="settingCashBank" min="0" step="0.01" placeholder="0">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-secondary" id="cancelSettingsBtn">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script src="app.js"></script>
+</body>
+
+</html>
