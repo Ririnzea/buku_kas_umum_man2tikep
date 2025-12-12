@@ -63,6 +63,8 @@
         <div class="action-buttons no-print">
             <button id="addTransactionBtn" class="btn btn-primary">+ Tambah Transaksi</button>
             <button id="settingsBtn" class="btn btn-secondary">⚙️ Pengaturan</button>
+            <button id="recapBtn" class="btn btn-info" style="background-color: #17a2b8; color: white;">📊 Rekap
+                Tahunan</button>
             <button id="changePasswordBtn" class="btn btn-warning"
                 style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">🔑 Ubah
                 Password</button>
@@ -309,6 +311,131 @@
                         <button type="button" class="btn btn-secondary" id="cancelSettingsBtn">Batal</button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Recap Modal -->
+        <div id="recapModal" class="modal">
+            <div class="modal-content" style="max-width: 900px;">
+                <div class="modal-header">
+                    <h2>Rekapan Tahunan <span id="recapYearDisplay"></span></h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="no-print" style="margin-bottom: 15px; text-align: right;">
+                        <button onclick="printRecap()" class="btn btn-success">🖨️ Cetak Rekap</button>
+                    </div>
+                    <div id="recapPrintArea">
+                        <div class="recap-header-print" style="display: none; text-align: center; margin-bottom: 20px;">
+                            <h3>REKAPITULASI BUKU KAS UMUM</h3>
+                            <h4 id="printMadrasahName">MAN 2 TIDORE KEPULAUAN</h4>
+                            <p>Tahun Anggaran <span id="printYear">2025</span></p>
+                        </div>
+                        <style>
+                            .table-recap {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 10px;
+                            }
+
+                            .table-recap thead {
+                                background: none;
+                                color: #000;
+                            }
+
+                            .table-recap th,
+                            .table-recap td {
+                                border: 1px solid #000;
+                                padding: 8px;
+                                text-align: right;
+                            }
+
+                            .table-recap th {
+                                background-color: #f2f2f2;
+                                color: #000;
+                                /* Force black text */
+                                text-align: center;
+                                font-weight: bold;
+                            }
+
+                            .table-recap .month-col {
+                                text-align: left;
+                            }
+
+                            @media print {
+                                body * {
+                                    visibility: hidden;
+                                }
+
+                                #recapModal,
+                                #recapModal * {
+                                    visibility: visible;
+                                }
+
+                                #recapModal {
+                                    position: absolute;
+                                    left: 0;
+                                    top: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    z-index: 9999;
+                                    background: white;
+                                    overflow: visible;
+                                }
+
+                                .modal-content {
+                                    box-shadow: none;
+                                    border: none;
+                                }
+
+                                .no-print,
+                                .close {
+                                    display: none !important;
+                                }
+
+                                .recap-header-print {
+                                    display: block !important;
+                                }
+                            }
+                        </style>
+                        <table class="table-recap">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Bulan</th>
+                                    <th>Penerimaan</th>
+                                    <th>Pengeluaran</th>
+                                    <th>Saldo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recapBody">
+                                <!-- Recap rows will be inserted here -->
+                            </tbody>
+                            <tfoot id="recapFoot" style="font-weight: bold; background: #f9f9f9;">
+                                <!-- Totals -->
+                            </tfoot>
+                        </table>
+
+                        <!-- Signature Section for Recap -->
+                        <div class="signature-section" style="border: none; margin-top: 50px;">
+                            <div class="signature-left">
+                                <p>Mengetahui</p>
+                                <p class="signature-title">Kepala Madrasah</p>
+                                <div class="signature-space"></div>
+                                <p class="signature-name" id="recapKepalaName">Nama Kepala</p>
+                                <p class="signature-nip" id="recapKepalaNIP">NIP...</p>
+                            </div>
+                            <div class="signature-right">
+                                <p><span id="recapSignatureLocation">Lokasi</span>, <span
+                                        id="recapSignatureDate">Tanggal</span></p>
+                                <p class="signature-title">Bendahara BOSDA</p>
+                                <div class="signature-space"></div>
+                                <p class="signature-name" id="recapBendaharaName">Nama Bendahara</p>
+                                <p class="signature-nip" id="recapBendaharaNIP">NIP...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

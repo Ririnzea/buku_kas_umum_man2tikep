@@ -115,7 +115,101 @@ function setupEventListeners() {
             }
         });
     }
+    // Recap Modal
+    const recapBtn = document.getElementById('recapBtn');
+    if (recapBtn) {
+        recapBtn.addEventListener('click', () => openRecapModal());
+    }
 }
+
+// Recap Functions
+function openRecapModal() {
+    const modal = document.getElementById('recapModal');
+    const tbody = document.getElementById('recapBody');
+    const tfoot = document.getElementById('recapFoot');
+    const yearDisplay = document.getElementById('recapYearDisplay');
+    const printYear = document.getElementById('printYear');
+    const printMadrasah = document.getElementById('printMadrasahName');
+
+    // Get year from main input or default to current year
+    const yearInput = document.getElementById('yearInput');
+    const selectedYear = parseInt(yearInput.value) || new Date().getFullYear();
+
+    yearDisplay.textContent = selectedYear;
+    printYear.textContent = selectedYear;
+    printMadrasah.textContent = settings.namaMadrasah;
+
+    // Populate Signature
+    document.getElementById('recapKepalaName').textContent = settings.kepalaName;
+    document.getElementById('recapKepalaNIP').textContent = settings.kepalaNIP;
+    document.getElementById('recapBendaharaName').textContent = settings.bendaharaName;
+    document.getElementById('recapBendaharaNIP').textContent = settings.bendaharaNIP;
+    document.getElementById('recapSignatureLocation').textContent = settings.location;
+    // Set date to December 31st of selected year or current date? 
+    // Usually annual recap is signed at the end of the year or today if viewed. 
+    // Let's use 31 Desember [Year] for now as it's an Annual Recap.
+    document.getElementById('recapSignatureDate').textContent = `31 Desember ${selectedYear}`;
+
+    tbody.innerHTML = '';
+
+    // Calculate Monthly Data
+    // Logic: Start from settings.previousPeriod as the 'Zero' point (Before Jan)
+    // Then accumulate month by month.
+
+    let runningBalance = settings.previousPeriod;
+    let totalYearPenerimaan = 0;
+    let totalYearPengeluaran = 0;
+
+    // Filter transactions for this year
+    const yearTransactions = transactions.filter(t => {
+        const d = new Date(t.date);
+        return d.getFullYear() === selectedYear;
+    });
+
+    for (let month = 1; month <= 12; month++) {
+        // Find transactions for this month
+        const monthlyTrans = yearTransactions.filter(t => {
+            const d = new Date(t.date);
+            return (d.getMonth() + 1) === month;
+        });
+
+        const monthPenerimaan = monthlyTrans.reduce((sum, t) => sum + t.penerimaan, 0);
+        const monthPengeluaran = monthlyTrans.reduce((sum, t) => sum + t.pengeluaran, 0);
+
+        runningBalance = runningBalance + monthPenerimaan - monthPengeluaran;
+
+        totalYearPenerimaan += monthPenerimaan;
+        totalYearPengeluaran += monthPengeluaran;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${month}</td>
+            <td class="month-col">${monthNames[month - 1]}</td>
+            <td>${formatCurrency(monthPenerimaan)}</td>
+            <td>${formatCurrency(monthPengeluaran)}</td>
+            <td>${formatCurrency(runningBalance)}</td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    // Footer Totals
+    tfoot.innerHTML = `
+        <tr>
+            <td colspan="2" style="text-align: center;">TOTAL</td>
+            <td>${formatCurrency(totalYearPenerimaan)}</td>
+            <td>${formatCurrency(totalYearPengeluaran)}</td>
+            <td>${formatCurrency(runningBalance)}</td>
+        </tr>
+    `;
+
+    modal.style.display = 'block';
+}
+
+function printRecap() {
+    window.print();
+}
+
+window.printRecap = printRecap;
 
 // Transaction Modal Functions
 function openTransactionModal(transaction = null) {
